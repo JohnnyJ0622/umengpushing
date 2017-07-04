@@ -238,20 +238,29 @@ namespace SlatPlusPushing
 
         private void buttonPull_Click(object sender, EventArgs e)
         {
-            buttonPull.Enabled = false;
-            pushButton.Enabled = false;
+            if ("".Equals(articleIDTextBox.Text))
+            {
+                MessageBox.Show("The article ID cannot be empty!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                articleIDTextBox.Focus();
 
-            WebClient wc = new WebClient();
-            wc.Credentials = CredentialCache.DefaultCredentials;
-            Byte[] pageData = wc.DownloadData("https://app.nzinfo.cn/index.php/h5/article/detail?id=" + articleIDTextBox.Text);
-            String webString = Encoding.UTF8.GetString(pageData);
-            Console.WriteLine(webString);
+            }
+            else
+            {
+                buttonPull.Enabled = false;
+                pushButton.Enabled = false;
 
-            Match TitleMatch = Regex.Match(webString, "<title>([^<]*)</title>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            articleTitleTextBox.Text = TitleMatch.Groups[1].Value;
-            
-            buttonPull.Enabled = true;
-            pushButton.Enabled = true;
+                WebClient wc = new WebClient();
+                wc.Credentials = CredentialCache.DefaultCredentials;
+                Byte[] pageData = wc.DownloadData("https://app.nzinfo.cn/index.php/h5/article/detail?id=" + articleIDTextBox.Text);
+                String webString = Encoding.UTF8.GetString(pageData);
+                Console.WriteLine(webString);
+
+                Match TitleMatch = Regex.Match(webString, "<title>([^<]*)</title>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                articleTitleTextBox.Text = TitleMatch.Groups[1].Value;
+
+                buttonPull.Enabled = true;
+                pushButton.Enabled = true;
+            }
         }
     }
 }
